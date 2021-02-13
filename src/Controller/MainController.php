@@ -17,4 +17,12 @@ class MainController extends AbstractController
             'controller_name' => 'MainController',
         ]);
     }
+
+    /**
+     * @Route("/mentions-legales", name="mentions")
+     */
+    public function mentions(): Response
+    {
+        return $this->render('main/mentions.html.twig');
+    }
 }
