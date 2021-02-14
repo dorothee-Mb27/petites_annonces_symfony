@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gérer  les  annonces
+{% endblock %}
+
+{% block body %}
+	<h1>Gérer les  annonces</h1>
+
+	<table class="table striped">
+		<thead>
+			<tr>
+				<th>Id</th>
+				<th>Titre</th>
+				<th>Date</th>
+				<th>Active</th>
+				<th>Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{%  for annonce in annonces %}
+				<tr>
+					<td>
+						{{annonce.id}}
+					</td>
+					<td>{{annonce.title}}
+					</td>
+					<td>{{annonce.createdAt|date}}
+					</td>
+					<td>
+						{# switch a #}
+						<label class="form-switch mt-2">
+
+							<input type="checkbox" {{ (annonce.active) ? 'checked' : '' }} data-id="{{annonce.id}}"/>
+							<span class="slider"></span>
+
+						</label>
+					</td>
+
+					<td class="text-center">
+						<a href="" class="btn rounded-1 primary press modal-trigger"
+						 data-target="modal-delete" data-id="{{annonce.id}}"
+						  data-title="{{annonce.title}}">
+							Supprimer
+						</a>
+
+					</td>
+				</tr>
+
+			{%  endfor %}
+
+		</tbody>
+	</table>
+	{#  modzl pour supprimer l'annonce #}
+	<div class="modal shadow-1 white falling" id="modal-delete" data-ax="modal">
+		<div class="modal-header">Supprimer une annonce</div>
+			<div class="divider"></div>
+			<div class="modal-content">
+		
+			</div>
+			<div class="divider"></div>
+			<div class="modal-footer">
+				<a href="#" class="btn red"> Valider</a>
+				<button data-target="modal-delete" class="ml-auto btn shadow-1
+				rounded-1 small primary modal-trigger">Close</button>
+			</div>
+	</div>
+
+	 
+	{# {{dump(annonces)}} #}
+{% endblock %}
+
+{% block javascripts %}
+	<script>
+		window.onload = () =>
+		 {
+			//  js button modal
+			 let modal = new Axentix.Modal('#modal-delete');
+			 let active = document.querySelectorAll("[type=checkbox]")
+
+			for (let bouton of activer) {
+				bouton.addEventListener("click", 
+				function () 
+				{ 
+				// Ajax activer , gérer l'action
+				let xmlhttp = new XMLHttpRequest;
+				// récupérer l'id via la route
+				xmlhttp.open("get", `/admin/annonces/activer/${this.dataset.id}`)
+				xmlhttp.send()
+
+				} // fin function
+				)
+			} // fin for 
+
+		let supprimer = document.querySelectorAll(".modal-trigger")
+		for(let bouton of supprimer)
+		 {
+			bouton.addEventListener("click", 
+			function () 
+				{ 
+				document.querySelector(".modal-footer a").href = `/admin/
+				annonces/supprimer/${this.dataset.id}`
+				document.querySelector(".modal-content").innerText = `Etes-vous 
+				sûr(e) de vouloir supprimer l'annonce "${this.dataset.title}"`
+				} // fin function
+				)
+			} // fin for 
+		
+		} //fin window
+	</script>
+
+{% endblock  %}
