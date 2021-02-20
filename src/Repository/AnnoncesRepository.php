@@ -18,6 +18,27 @@ class AnnoncesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Annonces::class);
     }
+// recherche les annonces en fonction des mots du formaulaire
+    public function search($mots = null, $categories = null)
+    {
+        $query = $this->createQueryBuilder('a');
+        $query->where('a.active = 1');
+        if($mots != null)
+        {
+            $query->andWhere('MATCH_AGAINST(a.title, a.content) AGAINST
+            (:mots boolean) > 0 ' )
+                ->setParameter('mots' , $mots);
+        }
+
+        if($categories != null)
+        {
+            $query->leftJoin('a.categories', 'c');
+            $query->andWhere('c.id = :id ')
+                ->setParameter('id' , $categories);
+        }
+
+        return $query->getQuery()->getResult();
+    }
 
     // /**
     //  * @return Annonces[] Returns an array of Annonces objects
