@@ -5,6 +5,10 @@
 {% block body %}
 
      <div class="container">
+        {% for message in app.flashes('message') %}
+           <div class="p-3 my-2 rounded-2 success"> {{ message }}</div>
+
+        {% endfor %}
         <div class="caroulix" id="carousel" data-ax="caroulix" data-ax-caroulix-autoplay-enabled="true" data-caroulix-indicators-enabled="true">
                 <div class="caroulix-arrow caroulix-prev">
                     <i class="fas fa-chevron-left"></i>
@@ -26,7 +30,7 @@
         <div class="card shadow-1 fx-row">
             <div class="primary d-flex vcenter fx-center px-4">
                     {# <img src="{{ 
-                    asset('uploads/images/annonces/'~ annonce.images[0].name)|imagine_filter('square')}}"
+                    asset('uploads/images/annonces/'~ image.name)|imagine_filter('square')}}"
                     alt="{{ annonce.title }}" >  #}
             </div>
             <div class="flex fx-col fx-grow">
@@ -36,16 +40,50 @@
                     <p>
                         {{ annonce.content|raw }}.
                     </p>
+                    <p>
+                    <button class="btn rounded-1 primary press modal-trigger"
+                     data-target="modal-contact">Contacter l'annonceur</button>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+{# modal --- #}
+<div class="modal shadow-1 white falling" id="modal-contact" data-ax="modal">
+  <div class="modal-header">Contacter l'annonceur</div>
+
+  <div class="divider"></div>
+  {{form_start(form)}}
+    <div class="modal-content">
+    {{form_widget(form.title)}}
+    {{form_row(form.email)}}
+     {{form_row(form.message)}}
+    </div>
+ 
+
+  <div class="divider"></div>
+
+  <div class="modal-footer">
+    <button class="btn small primary"> Envoyer </button>
+    <button data-target="modal-contact" 
+    class="ml-auto btn shadow-1 rounded-1 small secondary modal-trigger">
+    Fermer </button>
+  </div>
+   {{form_end(form)}}
+</div>
+
+
+
    
 {% endblock %}
 
 {% block javascripts %}
     <script>
+    window.onload = () => {
+        document.querySelector("#annonce_contact_title").value = "{{ annonce.title|raw }}";
+    }
         let caroulix = new Caroulix('#carousel');
+        let modal = new Modal('#modal-contact');
     </script>
 
 {% endblock %}
